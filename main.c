@@ -22,7 +22,22 @@ void logincpy(char *dest) {
 	strncpy(dest, getenv("USER"), SIZE);
 }
 
+int getos(char *dest) {
+	FILE *fp = fopen("/etc/os-release", "r");
+	char buff[SIZE];
+	
+	if(fp == NULL) return 0;
+	
+	while(fgets(buff, sizeof(buff), fp) != NULL) {
+		if(strncmp(buff, "ID=", 3) == 0) {
 
+			buff[strcspn(buff, "\n")] = '\0';
+			strncpy(dest, buff + 3, SIZE);
+			break;
+		}
+	}
+	return 1;
+}
 
 int main(void) {
 	struct utsname info;
@@ -34,6 +49,11 @@ int main(void) {
 	struct sysinfo sinfo;
 	if(sysinfo(&sinfo) == 1) {
 		perror("sysinfo");
+		return -1;
+	}
+	char os[SIZE];
+	if(getos(os) == 0) { 
+		fprintf(stderr, "error getting os\n");
 		return -1;
 	}
 
@@ -51,7 +71,7 @@ int main(void) {
 		putchar('-');
 	putchar('\n');
 
-	printf(BLU "OS: " RST "%s %s\n", info.sysname, info.machine);
+	printf(BLU "OS: " RST "%s %s\n", os, info.machine);
 	printf(BLU "KERNEL: " RST "%s\n", info.release);
 	printf(BLU "UPTIME: " RST "%ld H %ld M\n", sinfo.uptime / 3600, sinfo.uptime / 60);
 	printf(BLU "RAM: " RST "%g MiB / %g MiB\n", used_ram , total_ram);
