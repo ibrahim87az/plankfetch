@@ -27,12 +27,13 @@ int getos(char *dest) {
 	char buff[SIZE];
 	
 	if(fp == NULL) return 0;
-	
+
+	// search for NAME=
 	while(fgets(buff, sizeof(buff), fp) != NULL) {
-		if(strncmp(buff, "ID=", 3) == 0) {
+		if(strncmp(buff, "NAME=", 5) == 0) {
 
 			buff[strcspn(buff, "\n")] = '\0';
-			strncpy(dest, buff + 3, SIZE);
+			strncpy(dest, buff + 5, SIZE);
 			break;
 		}
 	}
