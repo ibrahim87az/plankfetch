@@ -31,9 +31,13 @@ int getos(char *dest) {
 	// search for NAME=
 	while(fgets(buff, sizeof(buff), fp) != NULL) {
 		if(strncmp(buff, "NAME=", 5) == 0) {
-
+			char *os = buff + 6;
+			char *end = strrchr(os, '"');
+			if(!end)
+				end = strrchr(os, '\'');
+			*end = '\0';
 			buff[strcspn(buff, "\n")] = '\0';
-			strncpy(dest, buff + 5, SIZE);
+			strncpy(dest, os, SIZE);
 			break;
 		}
 	}
