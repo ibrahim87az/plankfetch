@@ -25,17 +25,22 @@ void logincpy(char *dest) {
 int getos(char *dest) {
 	FILE *fp = fopen("/etc/os-release", "r");
 	char buff[SIZE];
-	
+
 	if(fp == NULL) return 0;
 
 	// search for NAME=
 	while(fgets(buff, sizeof(buff), fp) != NULL) {
 		if(strncmp(buff, "NAME=", 5) == 0) {
-			char *os = buff + 6;
-			char *end = strrchr(os, '"');
-			if(!end)
-				end = strrchr(os, '\'');
-			*end = '\0';
+			char *os = NULL;
+			if(buff[5] == '"' || buff[5] == '\'') {
+				os = buff + 6;
+				char *end = strrchr(os, '"');
+				if(!end)
+					end = strrchr(os, '\'');
+				*end = '\0';
+			}
+			else os = buff + 5;
+
 			buff[strcspn(buff, "\n")] = '\0';
 			strncpy(dest, os, SIZE);
 			break;
