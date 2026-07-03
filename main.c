@@ -50,6 +50,15 @@ int getos(char *dest) {
 }
 
 int main(void) {
+	char logo[6][SIZE] = {
+		"        __  ",
+		" _ __  / _| ",
+		"| '_ \\| |_ ",
+		"| |_) |  _| ",
+		"| .__/|_|   ",
+		"|_|         "
+	};
+
 	struct utsname info;
 	if(uname(&info) == -1) {
 		perror("uname");
@@ -75,16 +84,25 @@ int main(void) {
 
 	hostnamecpy(hostname);
 	logincpy(login);
-	printf(GRN "%s" RST "@%s\n", login, hostname);
+	printf(GRN "\n\n%s" RST "@%s\n", login, hostname);
 
 	for(int i = 0; i < (int) strlen(login) + (int) strlen(hostname) + 1; i++)
 		putchar('-');
 	putchar('\n');
 
-	printf(BLU "OS: " RST "%s %s\n", os, info.machine);
-	printf(BLU "KERNEL: " RST "%s\n", info.release);
-	printf(BLU "UPTIME: " RST "%ld H %ld M\n", sinfo.uptime / 3600, sinfo.uptime / 60);
-	printf(BLU "RAM: " RST "%g MiB / %g MiB\n", used_ram , total_ram);
+	// PRINT INFO, NOW
+
+	printf(GRN "%s\t" BLU "OS: " RST "%s %s\n", logo[0], os, info.machine);
+	printf(GRN "%s\t" BLU "KERNEL: " RST "%s\n", logo[1], info.release);
+	printf(GRN "%s\t" BLU "UPTIME: " RST "%ld H %ld M\n", logo[2], sinfo.uptime / 3600, sinfo.uptime / 60);
+	printf(GRN "%s\t" BLU "RAM: " RST "%g MiB / %g MiB\n", logo[3], used_ram , total_ram);
+	printf(GRN "%s\n", logo[4]);
+	printf(GRN "%s\n\n\n", logo[5]);
+	//printf(GRN "%s\n", logo[6]);
+	//printf(GRN "%s\n\n\n", logo[7]);
+
+
+
 
 	return 0;
 }
