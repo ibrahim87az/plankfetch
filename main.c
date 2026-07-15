@@ -22,7 +22,7 @@ void logincpy(char *dest) {
 	strncpy(dest, getenv("USER"), SIZE);
 }
 
-int getos(char *dest) {
+int getos(char *str, char *dest) {
 	FILE *fp = fopen("/etc/os-release", "r");
 	char buff[SIZE];
 
@@ -30,16 +30,16 @@ int getos(char *dest) {
 
 	// search for NAME=
 	while(fgets(buff, sizeof(buff), fp) != NULL) {
-		if(strncmp(buff, "NAME=", 5) == 0) {
+		if(strncmp(buff, str, strlen(str)) == 0) {
 			char *os = NULL;
-			if(buff[5] == '"' || buff[5] == '\'') {
-				os = buff + 6;
+			if(buff[strlen(str)] == '"' || buff[strlen(str)] == '\'') {
+				os = buff + strlen(str) + 1;
 				char *end = strrchr(os, '"');
 				if(!end)
 					end = strrchr(os, '\'');
 				*end = '\0';
 			}
-			else os = buff + 5;
+			else os = buff + strlen(str);
 
 			buff[strcspn(buff, "\n")] = '\0';
 			strncpy(dest, os, SIZE);
@@ -71,7 +71,7 @@ int main(void) {
 		return -1;
 	}
 	char os[SIZE];
-	if(getos(os) == 0) { 
+	if(getos("NAME=", os) == 0) { 
 		fprintf(stderr, "error getting os\n");
 		return -1;
 	}
@@ -97,7 +97,7 @@ int main(void) {
 	printf(GRN "%s\t" BLU "UPTIME: " RST "%ld H %ld M\n", logo[2], sinfo.uptime / 3600, sinfo.uptime / 60);
 	printf(GRN "%s\t" BLU "RAM: " RST "%g MiB / %g MiB\n", logo[3], used_ram , total_ram);
 	printf(GRN "%s\n", logo[4]);
-	printf(GRN "%s\n\n\n", logo[5]);
+	printf(GRN "%s\n\n\n" RST, logo[5]);
 	//printf(GRN "%s\n", logo[6]);
 	//printf(GRN "%s\n\n\n", logo[7]);
 
